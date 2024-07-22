@@ -15,15 +15,15 @@ import { Loader2 } from 'lucide-react'
 import SignUp from '@/app/(auth)/sign-up/page'
 import SignIn from '@/app/(auth)/sign-in/page'
 import { useRouter } from 'next/navigation'
-import { signUp } from '@/lib/actions/user.actions'
+import { signIn, signUp } from '@/lib/actions/user.actions'
 
 
 function AuthForm({ type }: { type: string }) {
 
   const router = useRouter();
-  const [user, setUser] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const formSchema = authFormSchema(type);
   
   // 1. Define your form.
