@@ -1,15 +1,26 @@
 'use server';
 
-import { ID } from "node-appwrite";
+import { ID, Models } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
 import { parseStringify } from "../utils";
+
+
+const setSessionCookie = ( session: Models.Session) => {
+    cookies().set("appwrite-session", session.secret, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+      });
+}
 
 export const signIn = async ({ email, password}: signInProps) => {
     try {
         // Mutation / Database call / API call
         const { account } = await createAdminClient();
         const session = await account.createEmailPasswordSession(email, password);
+        setSessionCookie(session);
         return parseStringify(session);
     } catch (error) {
         console.error('Error', error);
@@ -29,12 +40,7 @@ export const signUp = async (userData: SignUpParams) => {
 
         const session = await account.createEmailPasswordSession(email, password);
       
-        cookies().set("appwrite-session", session.secret, {
-          path: "/",
-          httpOnly: true,
-          sameSite: "strict",
-          secure: true,
-        });
+        setSessionCookie(session);
 
         return parseStringify(newUserAccount);
 
